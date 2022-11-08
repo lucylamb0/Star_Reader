@@ -66,6 +66,12 @@ x_velocity_star_2 = [record["velocity"]["x"] for record in star_records["star_2"
 # make a list of just y positions for star 2
 y_velocity_star_2 = [record["velocity"]["y"] for record in star_records["star_2"]]
 
+# delete the last 90% of the data to save time in saving the animation
+# x_positions_star_1 = x_positions_star_1[:int(len(x_positions_star_1) * 0.99)]
+# y_positions_star_1 = y_positions_star_1[:int(len(y_positions_star_1) * 0.99)]
+# x_positions_star_2 = x_positions_star_2[:int(len(x_positions_star_2) * 0.99)]
+# y_positions_star_2 = y_positions_star_2[:int(len(y_positions_star_2) * 0.99)]
+
 fig, ax = plt.subplots()
 ax.set_xlim(-0.2e-7, 0.2e-7)
 ax.set_ylim(-0.2e-7, 0.2e-7)
@@ -97,17 +103,21 @@ def animate(i):
     y2 = y_positions_star_2[i:i+10]
     line.set_data(x, y)
     line2.set_data(x2, y2)
-    if i % 500 == 0:
+    if i % 100 == 0:
+        # ax.savefig("frames/frame_" + str(i) + ".png")
         print("Frame: " + str(i))
+        print("Remaining: " + str(len(x_positions_star_1) - i))
     # plt.text(x2[0], y2[0], "Star 2")
     # plt.text(x2[0], y2[0] - 100, x_velocity_star_2[i])
     # plt.text(x2[0], y2[0] - 200, y_velocity_star_2[i])
     return line, line2
 
 
-ani = animation.FuncAnimation(fig, animate, frames=range(0, len(x_positions_star_1)), init_func=init, interval=10,
+
+ani = animation.FuncAnimation(fig, animate, frames=range(0, len(x_positions_star_1)) , init_func=init, interval=10,
                               blit=True)
 
+# ani.save('animation.gif', fps=30, writer='imagemagick')
 
 plt.show()
 
