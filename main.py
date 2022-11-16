@@ -84,7 +84,7 @@ def import_data(filename):
     return stars
 
 
-stars = import_data("Stars_gaussian.test.dump.csv")
+stars = import_data("Stars_gaussian-1000.csv")
 star_array = np.zeros((len(stars), 3), dtype=float)
 for i in range(len(stars)):
     star_array[i][0] = stars[i].x_list[0]
@@ -92,14 +92,15 @@ for i in range(len(stars)):
     star_array[i][2] = stars[i].z_list[0]
 
 
+
 style.use('fivethirtyeight')
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 # set the limits of the graph
-limitsx = (-8, 8)
-limitsy = (-8, 8)
-limitsz = (-8, 8)
+limitsx = (-0.75, 0.75)
+limitsy = (-0.75, 0.75)
+limitsz = (-0.75, 0.75)
 ax.set_xlabel('X Label')
 ax.set_ylabel('Y Label')
 ax.set_zlabel('Z Label')
@@ -110,19 +111,22 @@ def update(frame):
     global limitsy
     global limitsz
     ax.clear()
-    ax.scatter(star_array[:, 0], star_array[:, 1], star_array[:, 2])
+    ax.scatter(star_array[:, 0], star_array[:, 1], star_array[:, 2], c='r', marker='o')
+    ax.set_xlabel('X-axis (Parsecs)', fontsize=10)
+    ax.set_ylabel('Y-axis (Parsecs)', fontsize=10)
+    ax.set_zlabel('Z-axis (Parsecs)', fontsize=10)
+
     ax.set_xlim3d(limitsx)
     ax.set_ylim3d(limitsy)
     ax.set_zlim3d(limitsz)
     for i in range(len(stars)):
-
         star_array[i][0] = stars[i].x_list[frame]
         star_array[i][1] = stars[i].y_list[frame]
         star_array[i][2] = stars[i].z_list[frame]
 
 
 
-ani = animation.FuncAnimation(fig, update, interval=10, frames=len(stars[0].x_list))
+ani = animation.FuncAnimation(fig, update, interval=100, frames=len(stars[0].x_list))
 plt.show()
 
 
