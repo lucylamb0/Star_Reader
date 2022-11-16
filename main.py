@@ -84,23 +84,56 @@ def import_data(filename):
     return stars
 
 
-stars = import_data("Stars_gaussian-1000.csv")
-star_array = np.zeros((len(stars), 3), dtype=float)
+stars = import_data("Stars_gaussian_10.csv")
+star_array = np.zeros((len(stars), 9), dtype=float)
 for i in range(len(stars)):
     star_array[i][0] = stars[i].x_list[0]
     star_array[i][1] = stars[i].y_list[0]
     star_array[i][2] = stars[i].z_list[0]
+    star_array[i][3] = stars[i].x_vel_list[0]
+    star_array[i][4] = stars[i].y_vel_list[0]
+    star_array[i][5] = stars[i].z_vel_list[0]
+    star_array[i][6] = stars[i].x_acc_list[0]
+    star_array[i][7] = stars[i].y_acc_list[0]
+    star_array[i][8] = stars[i].z_acc_list[0]
 
+
+
+    def plot_3d(x, y, z, vx, vy, vz, acx, acy ,acz, ax, title):
+        # plotting points on a 3D plane and their vectors for velocity and acceleration
+        ax.scatter(x, y, z, c='r', marker='o')
+        ax.quiver(x, y, z, vx, vy, vz, length=0.1, normalize=True, color='b')
+        ax.quiver(x, y, z, acx, acy, acz, length=0.1, normalize=True, color='g')
+        ax.legend(['Position', 'Velocity', 'Acceleration'])
+        ax.set_xlabel('X-axis (Parsecs)', fontsize=10)
+        ax.set_ylabel('Y-axis (Parsecs)', fontsize=10)
+        ax.set_zlabel('Z-axis (Parsecs)', fontsize=10)
+        ax.set_title(title, fontsize=10)
+        # ax.set_xlim(-100, 100)
+        # ax.set_ylim(-100, 100)
+        # ax.set_zlim(-100, 100)
+        ax.grid(True)
+        plt.show()
 
 
 style.use('fivethirtyeight')
 
+# fig = plt.figure()
+# ax1 = fig.add_subplot(111, projection='3d')
+# title = "3D Plot of Stars"
+# plot_3d(star_array[:, 0], star_array[:, 1], star_array[:, 2],
+#         star_array[:, 3], star_array[:, 4], star_array[:, 5],
+#         star_array[:, 6], star_array[:, 7], star_array[:, 8],
+#         ax1, title)
+
+
+
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 # set the limits of the graph
-limitsx = (-0.75, 0.75)
-limitsy = (-0.75, 0.75)
-limitsz = (-0.75, 0.75)
+limitsx = (-0.1, 0.1)
+limitsy = (-0.1, 0.1)
+limitsz = (-0.1, 0.1)
 ax.set_xlabel('X Label')
 ax.set_ylabel('Y Label')
 ax.set_zlabel('Z Label')
@@ -112,6 +145,15 @@ def update(frame):
     global limitsz
     ax.clear()
     ax.scatter(star_array[:, 0], star_array[:, 1], star_array[:, 2], c='r', marker='o')
+    ax.quiver(star_array[:, 0], star_array[:, 1], star_array[:, 2],
+              star_array[:, 3], star_array[:, 4], star_array[:, 5],
+                length=0.005, normalize=True, color='b')
+    ax.quiver(star_array[:, 0], star_array[:, 1], star_array[:, 2],
+                star_array[:, 6], star_array[:, 7], star_array[:, 8],
+                length=0.005, normalize=True, color='g')
+    ax.legend(['Position', 'Velocity', 'Acceleration'])
+    ax.set_title('3D Plot of Stars', fontsize=10)
+    ax.grid(True)
     ax.set_xlabel('X-axis (Parsecs)', fontsize=10)
     ax.set_ylabel('Y-axis (Parsecs)', fontsize=10)
     ax.set_zlabel('Z-axis (Parsecs)', fontsize=10)
@@ -123,10 +165,21 @@ def update(frame):
         star_array[i][0] = stars[i].x_list[frame]
         star_array[i][1] = stars[i].y_list[frame]
         star_array[i][2] = stars[i].z_list[frame]
+        star_array[i][3] = stars[i].x_vel_list[frame]
+        star_array[i][4] = stars[i].y_vel_list[frame]
+        star_array[i][5] = stars[i].z_vel_list[frame]
+        star_array[i][6] = stars[i].x_acc_list[frame]
+        star_array[i][7] = stars[i].y_acc_list[frame]
+        star_array[i][8] = stars[i].z_acc_list[frame]
+    if frame % 1000 == 0:
+        print(frame)
+        print(stars[0].x_list[frame], stars[0].y_list[frame], stars[0].z_list[frame])
+        print(stars[0].x_vel_list[frame], stars[0].y_vel_list[frame], stars[0].z_vel_list[frame])
+        print(stars[0].x_acc_list[frame], stars[0].y_acc_list[frame], stars[0].z_acc_list[frame])
+        print("")
 
 
-
-ani = animation.FuncAnimation(fig, update, interval=100, frames=len(stars[0].x_list))
+ani = animation.FuncAnimation(fig, update, interval=0.5, frames=len(stars[0].x_list))
 plt.show()
 
 
